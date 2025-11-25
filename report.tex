@@ -72,11 +72,7 @@
 \begin{spacing}{1.5}
 \newpage
 \section{Introduction}
-The emergence and widespread adoption of blockchain technology has revealed a fundamental structural limitation: scalability. This issue, along with the possible solutions to overcome it, is the main focus of this document.
-
-Scalability is one of the three fundamental components of the so-called blockchain Trilemma, along with decentralization and security.
-
-The Trilemma states that a blockchain system can only optimize two of these three properties at the same time, forcing designers to accept trade-offs in performance or trust assumptions.
+The emergence and widespread adoption of blockchain technology has revealed a fundamental structural limitation: scalability. Along with decentralization and security, scalability is one of the three fundamental components of the blockchain trilemma. The trilemma states that a blockchain system can only optimize two of these three properties at the same time, forcing designers to accept trade-offs in performance or trust assumptions.
 
 \begin{figure}[h]
     \centering
@@ -85,9 +81,18 @@ The Trilemma states that a blockchain system can only optimize two of these thre
     \label{fig:drawio}
 \end{figure}
 
-Interestingly, scalability challenges are not unique to blockchain systems. Traditional database architectures have long faced a comparable tension, often described as the CAP Theorem. Even though applied to different technologies, both frameworks highlight the same underlying idea: achieving perfect performance, resilience, and correctness at the same time is structurally difficult.
+Interestingly, scalability challenges are not unique to blockchain systems. Traditional database architectures have long faced a comparable tension, often described as the CAP Theorem. Even though applied to different technologies, both frameworks highlight the same underlying idea: achieving perfect performance, resilience and correctness at the same time is structurally difficult, and often impossible.
 
-Thus, blockchain scalability can be understood not as an isolated limitation, but as the continuation of a broader historical challenge in distributed systems.
+Blockchain scalability can thus be understood not as an isolated limitation, but as the continuation of a broader historical challenge in distributed systems.
+
+There are two main strategies to improve blockchain scalability. The first one is to modify the underlying blockchain architecture (Layer1, or L1). The second is to implement a second layer (L2) consisting of auxiliary technologies built on top of L1.
+
+Among L2 solutions, Rollups (and in particular Optimistic Rollups and Zero‑Knowledge Rollups) have gained central importance because they shift most computational load
+off‑chain while preserving the security guaranteed by Layer 1.
+
+
+This document examines the technical and functional characteristics of both approaches and discusses their differences, advantages and limitations, as well as potential adoption scenarios.
+The goal is to assess how these mechanisms contribute to addressing the scalability challenge and to evaluate the extent to which they can offer a viable path toward more efficient and widely deployable blockchain systems.
 
 \section{Technical Background}
 % add better section introduction

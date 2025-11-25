@@ -1,4 +1,12 @@
 # Understanding Blockchain
+## Project Information
+
+This project is part of the course 2IN1510 - Comprendre la blockchain in CentraleSupélec. It has been developed by:
+
+* Micaela Masri
+* Angelo PICERNO
+* Eduardo TEIXEIRA DE SOUSA
+* Elena PEROTTI
 
 ## Using LaTeX on Linux (Ubuntu)
 
