@@ -1,0 +1,77 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper, top=2.2cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry}
+
+\usepackage{titlesec}
+\titleformat{\section}
+  {\normalfont\fontsize{20}{10}\bfseries}{\thesection.}{0.5em}{}
+\titleformat{\subsection}
+  {\normalfont\fontsize{15}{15}\bfseries}{\thesubsection.}{0.5em}{}
+
+
+  
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+\usepackage{enumitem}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{setspace}
+\usepackage{listings}
+\usepackage{amsmath, amssymb, amsfonts}
+\usepackage{url}
+\usepackage{fancyvrb}
+\usepackage{caption}
+
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0.4pt}
+\makeatletter
+\renewcommand{\footrule}{
+  \vskip12pt
+  \hrule width\headwidth height\footrulewidth \vskip\footruleskip
+}
+\makeatother
+\makeatletter
+\renewcommand{\numberline}[1]{#1.\hskip0.7em}
+\makeatother
+
+
+\usepackage{parskip}
+\setlength{\parskip}{10pt}
+\setlength{\parindent}{0pt}
+
+\begin{document}
+\begin{titlepage}
+  \begin{center}
+    \vspace*{2cm}
+    \includegraphics[width=0.65\textwidth]{login-logo.png}
+    \vskip3cm
+    {\Huge\bfseries Optimistic and Zero-Knowledge Rollups}\\[1em]
+    {\Large\bfseries Understanding blockchain}\\[10em]
+    {\large Angelo PICERNO }\\[1em]
+    {\large Eduardo TEIXEIRA DE SOUSA }\\[1em]
+    {\large Elena PEROTTI }\\[1em]
+    {\large Micaela MASRI }\\[4em]
+    {\small November 2025}
+  \end{center}
+  \vfill
+\end{titlepage}
+
+\begingroup
+\setstretch{1.25}
+\tableofcontents
+\thispagestyle{empty}
+\endgroup
+
+
+\begin{spacing}{1.5}
+\newpage
+\section{Introduction}
+
+\end{spacing}
+\end{document}
