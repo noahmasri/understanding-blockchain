@@ -1,5 +1,13 @@
 # Understanding Blockchain
+
 ## Using LaTeX on Linux (Ubuntu)
+
+### Prerequisites
+
+Before installing LaTeX, make sure you have the following installed:
+
+- **Visual Studio Code (VS Code)**  
+  Download and install from [https://code.visualstudio.com/](https://code.visualstudio.com/).
 
 To compile and edit LaTeX documents on Ubuntu, it is recommended to install the following components:
 
