@@ -10,7 +10,8 @@
 
 
   
-\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue,bookmarksopen=true]{hyperref}
+\usepackage{hyperref}
+\usepackage{url}
 \usepackage{bookmark}
 \usepackage{enumitem}
 \usepackage{fancyhdr}
@@ -21,7 +22,6 @@
 \usepackage{setspace}
 \usepackage{listings}
 \usepackage{amsmath, amssymb, amsfonts}
-\usepackage{url}
 \usepackage{fancyvrb}
 \usepackage{caption}
 \graphicspath{{img/}}
@@ -131,7 +131,7 @@ However, PoS introduces a potential risk of centralization: users holding a larg
 
 To improve transaction throughput and overall scalability, several Layer 2 solutions have been developed. These solutions operate as external integrations built on top of the base layer and help overcome performance limitations while preserving the security guarantees of the underlying blockchain.
 
-Although different approaches exist, including State Channels and Sidechains, this document focuses exclusively on Rollups, a Layer 2 scalability solution designed to increase blockchain throughput and reduce transaction costs while preserving the security of Layer 1. Rollups have become the most widely adopted Layer 2 strategy, particularly for public blockchains, most notably Ethereum.
+Although different approaches exist, including State Channels, Plasma and Sidechains, this document focuses exclusively on Rollups, a Layer 2 scalability solution designed to increase blockchain throughput and reduce transaction costs while preserving the security of Layer 1. Rollups have become the most widely adopted Layer 2 strategy, particularly for public blockchains, most notably Ethereum.
 
 \subsubsection{Rollups}
 
@@ -153,10 +153,23 @@ These descriptions provide an overview of Rollups. In the following sections, we
 \section{Comparison Optimistic vs ZK Rollups}
 \section{Conclusion}
 The analysis of Optimistic Rollups and Zero-Knowledge Rollups has highlighted how both solutions represent fundamental tools for overcoming the scalability limits of Ethereum and, more generally, of public blockchains.
+
 Optimistic Rollups, based on dispute mechanisms (fraud proofs), offer a high level of compatibility with the EVM and guarantee security through cryptoeconomic incentives, but entail longer finalization times due to the challenge periods.
+
 ZK-Rollups, on the other hand, thanks to the use of cryptographic proofs (validity proofs), ensure immediate transaction finality and greater efficiency in resource management, although they require more specialized hardware and may involve a higher risk of operator centralization.
+
 In general, both solutions contribute to making blockchains more scalable, reducing transaction costs and times without compromising the security and decentralization guaranteed by Layer 1. The choice between Optimistic and ZK-Rollups depends on specific needs regarding scalability, speed, and computational complexity, as well as the application context.
 In the future, the evolution of Rollups, integration with sharding techniques, and improvements in validity proofs could make these solutions even more performant and accessible, paving the way for a new generation of decentralized applications with high transaction throughput and for large-scale adoption of blockchain in real-world contexts.
+
+\newpage
+\section*{Bibliography}
+
+\begin{enumerate}[label={[\arabic*]}, itemsep=9pt]
+  \item Dvorchuk, D., Shpinareva, I. (2025) Analysis of Blockchain Technology.\\
+        \url{https://www.researchgate.net/publication/392603297_Analysis_of_Blockchain-Technology}
+  \item Thibault, L. T., Sarry, T., \& Hafid, A. S. (2022). Blockchain scaling using rollups: A comprehensive survey. IEEE Access, 10, 93039-93054.
+  \item Vashchuk, O., \& Shuwar, R. (2018). Pros and cons of consensus algorithm proof of stake. Difference in the network safety in proof of work and proof of stake. Electronics and information technologies (09).
+\end{enumerate}
 
 \end{spacing}
 \end{document}
