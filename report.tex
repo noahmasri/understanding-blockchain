@@ -56,7 +56,8 @@
     {\large Angelo PICERNO }\\[1em]
     {\large Eduardo TEIXEIRA DE SOUSA }\\[1em]
     {\large Elena PEROTTI }\\[1em]
-    {\large Micaela MASRI }\\[4em]
+    {\large Micaela MASRI }\\[1em]
+    {\large Adrien SEIGLE }\\[4em]
     {\small November 2025}
   \end{center}
   \vfill
@@ -88,12 +89,64 @@ Blockchain scalability can thus be understood not as an isolated limitation, but
 There are two main strategies to improve blockchain scalability. The first one is to modify the underlying blockchain architecture (Layer1, or L1). The second is to implement a second layer (L2) consisting of auxiliary technologies built on top of L1.
 
 Among L2 solutions, Rollups (and in particular Optimistic Rollups and Zero‑Knowledge Rollups) have gained central importance because they shift most computational load
-off‑chain while preserving the security guaranteed by Layer 1.
+off‑chain, while preserving the security guaranteed by Layer 1.
 
 
 This document examines the technical and functional characteristics of both approaches and discusses their differences, advantages and limitations, as well as potential adoption scenarios.
 The goal is to assess how these mechanisms contribute to addressing the scalability challenge and to evaluate the extent to which they can offer a viable path toward more efficient and widely deployable blockchain systems.
 
+\section{Technical Background}
+
+In this section, we introduce the fundamental concepts necessary to understand blockchain scalability. We will review the key components of blockchain architecture, the challenges inherent to distributed ledger systems, and the mechanisms that have been proposed to enhance transaction throughput without compromising security. This background will provide the foundation for the subsequent discussion of Layer 2 solutions and Rollups.
+
+\subsection{Scalability and Layer 1}
+
+A Layer 1 blockchain is a foundational blockchain that processes and validates transactions independently within its own network, without relying on external systems. Examples of Layer 1 blockchains include Bitcoin, Ethereum, Solana, Aptos, and NEAR.
+
+Several solutions have been proposed to increase the transaction processing capacity at the Layer 1 level. These include \emph{sharding}, which enables parallel validation of transactions across different shards, and modifications to the consensus protocols to make them more efficient.
+
+\subsubsection{Sharding}
+
+Sharding consists of dividing a blockchain into smaller, more manageable segments, called shards, which can process transactions and execute smart contracts in parallel. By distributing the computational load across multiple shards, blockchain networks can significantly improve throughput while reducing latency and resource consumption.
+
+Unlike traditional blockchain architectures where all nodes must process every single transaction, sharding allows subsets of nodes to validate only a portion of the total transactions, thus increasing scalability.
+
+For example, if a network of 1{,}000 nodes is divided into 10 shards of 100 nodes each, the transaction processing speed can increase by approximately a factor of ten.
+
+An example of a sharding implementation is the NEAR Protocol, a Layer 1 blockchain that uses Nightshade. Its network is capable of processing up to 160{,}000 transactions per second (TPS), outperforming many other blockchain platforms.
+
+While sharding improves scalability, it also introduces potential security risks. If a shard contains too few nodes or if a single shard is targeted by malicious actors, it may become easier to compromise the consensus within that shard. Therefore, blockchain designers must carefully balance shard size, the total number of shards, and mechanisms for cross-shard communication to maintain the overall security of the network.
+
+\subsubsection{Consensus Protocols: PoW vs.\ PoS}
+
+Another approach to improving blockchain performance is the adoption of alternative consensus protocols, which affect transaction speed, security, and energy efficiency.
+
+\textbf{Proof of Work (PoW)} is a transaction validation algorithm based on solving computational problems, requiring network participants (miners) to perform complex cryptographic operations. PoW-based networks have significant environmental costs due to the high energy consumption associated with mining. Additionally, the need for specialized, high-performance hardware further increases the economic burden of maintaining network security.
+
+An alternative consensus protocol, \textbf{Proof of Stake (PoS)}, does not require high computational power and significantly reduces transaction times, making it a more efficient solution compared to PoW. In PoS, instead of solving cryptographic puzzles to find the correct nonce, users must prove ownership of a certain amount of digital tokens to participate in block validation.
+
+However, PoS introduces a potential risk of centralization: users holding a large number of tokens may exert disproportionate influence over the network, compromising decentralization.
+
+\subsection{Scalability and Layer 2}
+
+To improve transaction throughput and overall scalability, several Layer 2 solutions have been developed. These solutions operate as external integrations built on top of the base layer and help overcome performance limitations while preserving the security guarantees of the underlying blockchain.
+
+Although different approaches exist, including State Channels and Sidechains, this document focuses exclusively on Rollups, a Layer 2 scalability solution designed to increase blockchain throughput and reduce transaction costs while preserving the security of Layer 1. Rollups have become the most widely adopted Layer 2 strategy, particularly for public blockchains, most notably Ethereum.
+
+\subsubsection{Rollups}
+
+A Rollup works by executing transactions outside the main blockchain, while still relying on it for data availability and final verification. Instead of having every node on Layer 1 process every transaction, the Rollup aggregates a large number of transactions into a single batch, computes the resulting new state, and submits only the essential data back to the Layer 1 chain. This drastically reduces the amount of computation and storage required on the base layer, which in turn increases throughput and lowers fees. Even though execution happens off chain, Layer 1 blockchain is responsible for verifying correctness through proofs or dispute mechanisms, ensuring that all state transitions produced by the Rollup are valid.
+
+Overall, Rollups represent an effective compromise between scalability, transaction costs and security, and they are rapidly becoming one of the key technologies for improving blockchain performance.
+
+There are two primary types of Rollups:
+\begin{itemize}
+  \item \textbf{Optimistic Rollups:} Transactions are assumed to be valid by default and processed off chain. If a participant detects an invalid transaction, they can submit a \emph{fraud proof} on Layer 1. The dispute is resolved using Layer 1 verification. This approach significantly reduces processing time and costs, although it introduces a waiting period (challenge window) for potential disputes.
+
+  \item \textbf{Zero Knowledge Rollups (ZK Rollups):} Transactions are processed off chain, but for each batch, a cryptographic \emph{validity proof} is generated and published on Layer 1, which then verifies the proof to ensure it was done correctly. This proof guarantees that all transactions are correct without requiring a challenge period. ZK Rollups offer faster confirmations than Optimistic Rollups, but generating the proofs can require substantial computational resources.
+\end{itemize}
+
+These descriptions provide an overview of Rollups. In the following sections, we will explore each type in more detail, examining their mechanisms, advantages, and limitations.
 \section{Optimistic Rollups}
 
 \subsection{Operating Principle}
@@ -167,6 +220,16 @@ Rollups must publish all transaction data on-chain, increasing costs \\
 \end{tabular}
 \caption{Pros and Cons of Optimistic Rollups}
 \end{table}
+
+\section{Zero Knowledge Rollups}
+\section{Comparison Optimistic vs ZK Rollups}
+\section{Conclusion}
+The analysis of Optimistic Rollups and Zero-Knowledge Rollups has highlighted how both solutions represent fundamental tools for overcoming the scalability limits of Ethereum and, more generally, of public blockchains.
+Optimistic Rollups, based on dispute mechanisms (fraud proofs), offer a high level of compatibility with the EVM and guarantee security through cryptoeconomic incentives, but entail longer finalization times due to the challenge periods.
+ZK-Rollups, on the other hand, thanks to the use of cryptographic proofs (validity proofs), ensure immediate transaction finality and greater efficiency in resource management, although they require more specialized hardware and may involve a higher risk of operator centralization.
+In general, both solutions contribute to making blockchains more scalable, reducing transaction costs and times without compromising the security and decentralization guaranteed by Layer 1. The choice between Optimistic and ZK-Rollups depends on specific needs regarding scalability, speed, and computational complexity, as well as the application context.
+In the future, the evolution of Rollups, integration with sharding techniques, and improvements in validity proofs could make these solutions even more performant and accessible, paving the way for a new generation of decentralized applications with high transaction throughput and for large-scale adoption of blockchain in real-world contexts.
+
 
 \end{spacing}
 \end{document}

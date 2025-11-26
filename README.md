@@ -7,6 +7,7 @@ This project is part of the course 2IN1510 - Comprendre la blockchain in Central
 * Angelo PICERNO
 * Eduardo TEIXEIRA DE SOUSA
 * Elena PEROTTI
+* Adrien SEIGLE
 
 ## Using LaTeX on Linux (Ubuntu)
 
