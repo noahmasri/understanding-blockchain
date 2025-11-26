@@ -94,5 +94,47 @@ off‑chain while preserving the security guaranteed by Layer 1.
 This document examines the technical and functional characteristics of both approaches and discusses their differences, advantages and limitations, as well as potential adoption scenarios.
 The goal is to assess how these mechanisms contribute to addressing the scalability challenge and to evaluate the extent to which they can offer a viable path toward more efficient and widely deployable blockchain systems.
 
+\section{Optimistic Rollups}
+
+\subsection{Operating Principle}
+
+Optimistic Rollups are a scaling approach that involves moving transaction processing and state storage off-chain, outside the main network. Transactions are executed externally, but their related data is still recorded on the primary and official blockchain network where real transactions with economic value occur.
+
+The system functions through operators who group multiple off-chain transactions into large batches, which are later submitted to the blockchain. This approach allows fixed costs to be distributed across many transactions within each batch, which results in reduced fees for users. Additionally, Optimistic Rollups use data compression techniques to minimize the amount of information published on-chain.
+
+The term “optimistic” refers to the fact that these solutions assume that off-chain transactions are valid, and don't immediately require the publishing of cryptographic proofs of correctness. Instead, after a batch is submitted to the blockchain, a time window called the challenge period (which lasts roughly seven days for Ethereum) opens, during which anyone may dispute the results by providing proof of fraud.
+
+If the challenge succeeds, the disputed transactions are replayed and the rollup state is udpdated accordingly. In this case, the sequencer (the operator who included the incorrect transaction) incurs in an economic penalty.
+
+On the other hand, if the batch is not challenged before the challenge period ends, it is considered valid and permanently accepted by the blockchain. It's important to note that other rollup blocks may be built on top of a batch that has not yet been confirmed, however, if invalid transactions are later proven, all resulting state changes are retroactively reverted.
+
+\subsubsection{Transaction Execution}
+
+Users submit their transactions to validators, which are nodes that collect transactions, compress underlying data, and publish blocks to the chain.
+
+Any node may become a validator, but doing so requires depositing a bond, similar to a Proof-of-Stake. The bond acts as financial collateral and may be slashed (partially or fully confiscated) if a validator either publishes an invalid block or builds on top of a previously invalidated block (even if the new block itself is correct). This penalty system promotes honest behavior.
+
+Other validators in the Rollup chain locally execute the same transactions and compare their resulting state with the operator's proposed state, and if they find any discrepancies, they should initiate a challenge procedure.
+
+\subsubsection{Publishing Blocks to the Blockchain}
+
+After collecting transactions and building a block, the validator submits the block to the main chain as either calldata or blobs.
+
+Calldata is a non-persistent, immutable memory area of a smart contract. Although it remains stored in blockchain history, it is not part of the blockchain's state. This means calldata is cheaper for storing data than writing directly to state, and it significantly reduces fees for users.
+
+In Rollup systems, calldata is used to send compressed transaction data to the on-chain contract. The operator adds a new batch by invoking a specific Rollup contract function and passing the compressed data via calldata.
+
+Like calldata, blobs are immutable and non-persistent, but they are removed from network history after about 18 days. This solution further reduces costs and improves scalability.
+
+\subsubsection{State Commitments}
+
+In Optimistic Rollups, the chain state is organized in a Merkle tree called the state tree. The root of this tree (the state root) represents the rollup's latest state and is stored as a hash inside the on-chain contract.
+
+With every state transition, the validator computes a new state root, which replaces the previous one if it matches the value recorded in the contract. When a new batch is published, the validator must provide both the old and new state roots, and if the old root matches the one stored on-chain, it is replaced by the new one.
+
+In addition to the state root, the validator must also commit to the Merkle root of the transaction batch, enabling anyone to prove the inclusion of a single transaction through a Layer 1 Merkle proof.
+
+The Rollup contract immediately accepts new roots submitted by operators, but may later invalidate incorrect ones and restore the correct chain state.
+
 \end{spacing}
 \end{document}
