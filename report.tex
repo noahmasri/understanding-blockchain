@@ -147,8 +147,80 @@ There are two primary types of Rollups:
 \end{itemize}
 
 These descriptions provide an overview of Rollups. In the following sections, we will explore each type in more detail, examining their mechanisms, advantages, and limitations.
-
 \section{Optimistic Rollups}
+
+\subsection{Operating Principle}
+
+Optimistic Rollups are a scaling approach that involves moving transaction processing and state storage off-chain, outside the main network. Transactions are executed externally, but their related data is still recorded on the primary and official blockchain network where real transactions with economic value occur.
+
+The system functions through operators who group multiple off-chain transactions into large batches, which are later submitted to the blockchain. This approach allows fixed costs to be distributed across many transactions within each batch, which results in reduced fees for users. Additionally, Optimistic Rollups use data compression techniques to minimize the amount of information published on-chain.
+
+The term “optimistic” refers to the fact that these solutions assume that off-chain transactions are valid, and don't immediately require the publishing of cryptographic proofs of correctness. Instead, after a batch is submitted to the blockchain, a time window called the challenge period (which lasts roughly seven days for Ethereum) opens, during which anyone may dispute the results by providing proof of fraud.
+
+If the challenge succeeds, the disputed transactions are replayed and the rollup state is udpdated accordingly. In this case, the sequencer (the operator who included the incorrect transaction) incurs in an economic penalty.
+
+On the other hand, if the batch is not challenged before the challenge period ends, it is considered valid and permanently accepted by the blockchain. It's important to note that other rollup blocks may be built on top of a batch that has not yet been confirmed, however, if invalid transactions are later proven, all resulting state changes are retroactively reverted.
+
+\subsubsection{Transaction Execution}
+
+Users submit their transactions to validators, which are nodes that collect transactions, compress underlying data, and publish blocks to the chain.
+
+Any node may become a validator, but doing so requires depositing a bond, similar to a Proof-of-Stake. The bond acts as financial collateral and may be slashed (partially or fully confiscated) if a validator either publishes an invalid block or builds on top of a previously invalidated block (even if the new block itself is correct). This penalty system promotes honest behavior.
+
+Other validators in the Rollup chain locally execute the same transactions and compare their resulting state with the operator's proposed state, and if they find any discrepancies, they should initiate a challenge procedure.
+
+\subsubsection{Publishing Blocks to the Blockchain}
+
+After collecting transactions and building a block, the validator submits the block to the main chain as either calldata or blobs.
+
+Calldata is a non-persistent, immutable memory area of a smart contract. Although it remains stored in blockchain history, it is not part of the blockchain's state. This means calldata is cheaper for storing data than writing directly to state, and it significantly reduces fees for users.
+
+In Rollup systems, calldata is used to send compressed transaction data to the on-chain contract. The operator adds a new batch by invoking a specific Rollup contract function and passing the compressed data via calldata.
+
+Like calldata, blobs are immutable and non-persistent, but they are removed from network history after about 18 days. This solution further reduces costs and improves scalability.
+
+\subsubsection{State Commitments}
+
+In Optimistic Rollups, the chain state is organized in a Merkle tree called the state tree. The root of this tree (the state root) represents the rollup's latest state and is stored as a hash inside the on-chain contract.
+
+With every state transition, the validator computes a new state root, which replaces the previous one if it matches the value recorded in the contract. When a new batch is published, the validator must provide both the old and new state roots, and if the old root matches the one stored on-chain, it is replaced by the new one.
+
+In addition to the state root, the validator must also commit to the Merkle root of the transaction batch, enabling anyone to prove the inclusion of a single transaction through a Layer 1 Merkle proof.
+
+The Rollup contract immediately accepts new roots submitted by operators, but may later invalidate incorrect ones and restore the correct chain state.
+
+\subsubsection{Proving Fraud}
+
+As we previously established, Optimistic Rollups allow validators to publish blocks without providing proof of their validity, and a time window is defined during which anyone may challenge a state transition. Until then, rollup blocks are called assertions, as they may be disputed.
+
+There are two methods of proving the vailidity of an assertion once it is challenged. The first is single-round proof, in which the disputed transactions are replayed through a verification contract in Layer 1. The second involves multiple rounds: dividing the dispute avoids full transaction re-execution on L1 which results in a reduction of costs and on-chain data requirements.
+
+The transition from single-round to multi-round systems represents a fundamental improvement, as it maintains the same security guarantees while lowering costs and improving efficiency.
+
+\subsection{Pros and Cons}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{p{7cm} | p{7cm}}
+\textbf{Pros} & \textbf{Cons} \\ \hline
+Significant scalability improvements without sacrificing security or trustlessness &
+Transaction finality delays due to potential fraud challenges \\ \hline
+
+Transaction data is stored on Layer 1, improving transparency, security, censorship resistance, and decentralization &
+Centralized rollup validators may influence transaction ordering \\ \hline
+
+Fraud proving allows honest minorities to protect the chain, and fraud proof computation is accessible to regular L2 nodes &
+If no honest nodes exist, a malicious operator may steal funds by publishing invalid blocks and state commitments \\ \hline
+
+Anyone can advance the chain by executing transactions and publishing assertions &
+Users must wait through the challenge period before withdrawing funds \\ \hline
+
+Compatible with EVM and Solidity, allowing developers to deploy native Ethereum smart contracts or reuse existing tools to build new dApps &
+Rollups must publish all transaction data on-chain, increasing costs \\
+\end{tabular}
+\caption{Pros and Cons of Optimistic Rollups}
+\end{table}
+
 \section{Zero Knowledge Rollups}
 \section{Comparison Optimistic vs ZK Rollups}
 \section{Conclusion}
@@ -157,6 +229,7 @@ Optimistic Rollups, based on dispute mechanisms (fraud proofs), offer a high lev
 ZK-Rollups, on the other hand, thanks to the use of cryptographic proofs (validity proofs), ensure immediate transaction finality and greater efficiency in resource management, although they require more specialized hardware and may involve a higher risk of operator centralization.
 In general, both solutions contribute to making blockchains more scalable, reducing transaction costs and times without compromising the security and decentralization guaranteed by Layer 1. The choice between Optimistic and ZK-Rollups depends on specific needs regarding scalability, speed, and computational complexity, as well as the application context.
 In the future, the evolution of Rollups, integration with sharding techniques, and improvements in validity proofs could make these solutions even more performant and accessible, paving the way for a new generation of decentralized applications with high transaction throughput and for large-scale adoption of blockchain in real-world contexts.
+
 
 \end{spacing}
 \end{document}
