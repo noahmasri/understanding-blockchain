@@ -133,21 +133,20 @@ To improve transaction throughput and overall scalability, several Layer 2 solut
 
 Although different approaches exist, including State Channels and Sidechains, this document focuses exclusively on Rollups, a Layer 2 scalability solution designed to increase blockchain throughput and reduce transaction costs while preserving the security of Layer 1. Rollups have become the most widely adopted Layer 2 strategy, particularly for public blockchains, most notably Ethereum.
 
+\subsubsection{Rollups}
+
 A Rollup works by executing transactions outside the main blockchain, while still relying on it for data availability and final verification. Instead of having every node on Layer 1 process every transaction, the Rollup aggregates a large number of transactions into a single batch, computes the resulting new state, and submits only the essential data back to the Layer 1 chain. This drastically reduces the amount of computation and storage required on the base layer, which in turn increases throughput and lowers fees. Even though execution happens off chain, Layer 1 blockchain is responsible for verifying correctness through proofs or dispute mechanisms, ensuring that all state transitions produced by the Rollup are valid.
 
 Overall, Rollups represent an effective compromise between scalability, transaction costs and security, and they are rapidly becoming one of the key technologies for improving blockchain performance.
 
-\subsubsection{Optimistic Rollups}
+There are two primary types of Rollups:
+\begin{itemize}
+  \item \textbf{Optimistic Rollups:} Transactions are assumed to be valid by default and processed off chain. If a participant detects an invalid transaction, they can submit a \emph{fraud proof} on Layer 1. The dispute is resolved using Layer 1 verification. This approach significantly reduces processing time and costs, although it introduces a waiting period (challenge window) for potential disputes.
 
-\textbf{Optimistic Rollups} work on the principle that all off-chain transactions are valid by default, allowing high throughput and reduced latency compared to immediate verification on Layer 1. Transactions are grouped into batches and processed off-chain by operators, who then submit a proposed new state to Layer 1. After submission, there is a defined \emph{challenge period} during which any participant can contest a transaction in the batch using a \emph{fraud proof}.
+  \item \textbf{Zero Knowledge Rollups (ZK Rollups):} Transactions are processed off chain, but for each batch, a cryptographic \emph{validity proof} is generated and published on Layer 1. This proof guarantees that all transactions are correct without requiring a challenge period. ZK Rollups offer faster confirmations than Optimistic Rollups, but generating the proofs can require substantial computational resources.
+\end{itemize}
 
-The fraud proof process follows a game-theoretic protocol: the disputing participant and the operator who proposed the state interact to isolate the dispute down to a single computational step, which is then executed on Layer 1. If the execution result differs from the proposed state, the fraud proof is successful, the batch is reverted, and the operator responsible is penalized, often by forfeiting a staked deposit.
-
-If no disputes are raised during the challenge period, the proposed state is accepted as final, and the batch of transactions is confirmed on Layer 1. This mechanism allows most computation to occur off-chain while relying on Layer 1 to enforce correctness and ensure security.
-
-
-\subsubsection{Zero Knowledge Rollups (ZK Rollups)}
-\textbf{Zero Knowledge Rollups (ZK Rollups)} generate a cryptographic proof known as a validity proof for each batch of transactions. This proof, published on Layer 1, guarantees that all transactions were executed correctly, which removes the need for dispute periods. ZK Rollups offer faster confirmation times than Optimistic Rollups, but generating the proofs can require substantial computational resources.
+Overall, Rollups represent an effective compromise between scalability, transaction costs and security, and they are rapidly becoming one of the key technologies for improving blockchain performance.
 
 \end{spacing}
 \end{document}
