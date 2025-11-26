@@ -136,5 +136,37 @@ In addition to the state root, the validator must also commit to the Merkle root
 
 The Rollup contract immediately accepts new roots submitted by operators, but may later invalidate incorrect ones and restore the correct chain state.
 
+\subsubsection{Proving Fraud}
+
+As we previously established, Optimistic Rollups allow validators to publish blocks without providing proof of their validity, and a time window is defined during which anyone may challenge a state transition. Until then, rollup blocks are called assertions, as they may be disputed.
+
+There are two methods of proving the vailidity of an assertion once it is challenged. The first is single-round proof, in which the disputed transactions are replayed through a verification contract in Layer 1. The second involves multiple rounds: dividing the dispute avoids full transaction re-execution on L1 which results in a reduction of costs and on-chain data requirements.
+
+The transition from single-round to multi-round systems represents a fundamental improvement, as it maintains the same security guarantees while lowering costs and improving efficiency.
+
+\subsection{Pros and Cons}
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{p{7cm} | p{7cm}}
+\textbf{Pros} & \textbf{Cons} \\ \hline
+Significant scalability improvements without sacrificing security or trustlessness &
+Transaction finality delays due to potential fraud challenges \\ \hline
+
+Transaction data is stored on Layer 1, improving transparency, security, censorship resistance, and decentralization &
+Centralized rollup validators may influence transaction ordering \\ \hline
+
+Fraud proving allows honest minorities to protect the chain, and fraud proof computation is accessible to regular L2 nodes &
+If no honest nodes exist, a malicious operator may steal funds by publishing invalid blocks and state commitments \\ \hline
+
+Anyone can advance the chain by executing transactions and publishing assertions &
+Users must wait through the challenge period before withdrawing funds \\ \hline
+
+Compatible with EVM and Solidity, allowing developers to deploy native Ethereum smart contracts or reuse existing tools to build new dApps &
+Rollups must publish all transaction data on-chain, increasing costs \\
+\end{tabular}
+\caption{Pros and Cons of Optimistic Rollups}
+\end{table}
+
 \end{spacing}
 \end{document}
