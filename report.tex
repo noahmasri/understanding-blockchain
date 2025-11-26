@@ -143,10 +143,10 @@ There are two primary types of Rollups:
 \begin{itemize}
   \item \textbf{Optimistic Rollups:} Transactions are assumed to be valid by default and processed off chain. If a participant detects an invalid transaction, they can submit a \emph{fraud proof} on Layer 1. The dispute is resolved using Layer 1 verification. This approach significantly reduces processing time and costs, although it introduces a waiting period (challenge window) for potential disputes.
 
-  \item \textbf{Zero Knowledge Rollups (ZK Rollups):} Transactions are processed off chain, but for each batch, a cryptographic \emph{validity proof} is generated and published on Layer 1. This proof guarantees that all transactions are correct without requiring a challenge period. ZK Rollups offer faster confirmations than Optimistic Rollups, but generating the proofs can require substantial computational resources.
+  \item \textbf{Zero Knowledge Rollups (ZK Rollups):} Transactions are processed off chain, but for each batch, a cryptographic \emph{validity proof} is generated and published on Layer 1, which then verifies the proof to ensure it was done correctly. This proof guarantees that all transactions are correct without requiring a challenge period. ZK Rollups offer faster confirmations than Optimistic Rollups, but generating the proofs can require substantial computational resources.
 \end{itemize}
 
-Overall, Rollups represent an effective compromise between scalability, transaction costs and security, and they are rapidly becoming one of the key technologies for improving blockchain performance.
+These descriptions provide an overview of Rollups. In the following sections, we will explore each type in more detail, examining their mechanisms, advantages, and limitations.
 
 \section{Optimistic Rollups}
 \section{Zero Knowledge Rollups}
