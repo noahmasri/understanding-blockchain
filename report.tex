@@ -224,6 +224,55 @@ Rollups must publish all transaction data on-chain, increasing costs \\
 
 \section{Zero Knowledge Rollups}
 \section{Comparison Optimistic vs ZK Rollups}
+
+In this chapter, we compare the main characteristics of the two primary rollup models: Optimistic Rollups and ZK-Rollups.
+
+\subsection{Transaction Validation}
+
+\textbf{Optimistic Rollups.}
+Transactions are considered valid by default. However, there is a challenge period during which anyone can contest the correctness of a batch of transactions by providing a fraud proof. If the batch is found to be incorrect, the state is corrected.
+
+\medskip
+
+\textbf{ZK-Rollups.}
+Transactions are not automatically valid. Each batch must be accompanied by a cryptographic validity proof, which guarantees the correctness of the transactions before the state is updated on L1. Once the proof is verified, transactions become final immediately.
+
+\subsection{Withdrawal of Funds}
+
+\textbf{Optimistic Rollups.}
+Withdrawals are delayed to allow for the challenge phase; users must wait until the end of the challenge period before they can withdraw their funds.
+
+\medskip
+
+\textbf{ZK-Rollups.}
+Funds can be withdrawn as soon as the contract verifies the validity proof, ensuring immediate finality and a better user experience.
+
+\subsection{Validity Proofs}
+
+\textbf{Optimistic Rollups.}
+No validity proofs are published on-chain; security relies on the ability to contest incorrect batches through fraud proofs.
+
+\medskip
+
+\textbf{ZK-Rollups.}
+Validity proofs are published on-chain together with the summary of the updated state. This allows the contract to verify the correctness of batches without having to recompute them.
+
+\subsection{Operational Mechanism}
+
+\subsubsection*{Optimistic Rollups}
+\begin{enumerate}
+    \item Aggregate multiple transactions into batches and send compressed data to the blockchain.
+    \item Transactions are executed off-chain, while the data is published on the mainnet.
+    \item A challenge period begins; uncontested batches are accepted as valid, while contested ones are corrected if necessary.
+\end{enumerate}
+
+\subsubsection*{ZK-Rollups}
+\begin{enumerate}
+    \item Aggregate transactions into batches.
+    \item The operator submits a summary of the state changes along with the validity proof.
+    \item Once the proof is verified by the contract, the transactions are finalized and the updated state is considered valid.
+\end{enumerate}
+
 \section{Conclusion}
 The analysis of Optimistic Rollups and Zero-Knowledge Rollups has highlighted how both solutions represent fundamental tools for overcoming the scalability limits of Ethereum and, more generally, of public blockchains.
 Optimistic Rollups, based on dispute mechanisms (fraud proofs), offer a high level of compatibility with the EVM and guarantee security through cryptoeconomic incentives, but entail longer finalization times due to the challenge periods.
