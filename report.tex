@@ -19,6 +19,8 @@
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{booktabs}
 \usepackage{setspace}
 \usepackage{listings}
 \usepackage{amsmath, amssymb, amsfonts}
@@ -200,29 +202,128 @@ The transition from single-round to multi-round systems represents a fundamental
 
 \subsection{Pros and Cons}
 
-\begin{table}[h!]
-\centering
-\begin{tabular}{p{7cm} | p{7cm}}
-\textbf{Pros} & \textbf{Cons} \\ \hline
-Significant scalability improvements without sacrificing security or trustlessness &
-Transaction finality delays due to potential fraud challenges \\ \hline
+\begin{longtable}{@{}p{7cm} p{7cm}@{}}
+\caption{Advantages and disadvantages of Optimistic Rollups}
+\label{tab:optimistic-rollups} \\
+\toprule
+\textit{Advantages} & \textit{Disadvantages} \\
+\midrule
+\endfirsthead
 
-Transaction data is stored on Layer 1, improving transparency, security, censorship resistance, and decentralization &
-Centralized rollup validators may influence transaction ordering \\ \hline
+\toprule
+\textit{Advantages} & \textit{Disadvantages} \\
+\midrule
+\endhead
 
-Fraud proving allows honest minorities to protect the chain, and fraud proof computation is accessible to regular L2 nodes &
-If no honest nodes exist, a malicious operator may steal funds by publishing invalid blocks and state commitments \\ \hline
+\bottomrule
+\endlastfoot
 
-Anyone can advance the chain by executing transactions and publishing assertions &
-Users must wait through the challenge period before withdrawing funds \\ \hline
+Significant scalability improvements without sacrificing security or trustlessness
+& Transaction finality delays due to potential fraud challenges \\[0.5em]
 
-Compatible with EVM and Solidity, allowing developers to deploy native Ethereum smart contracts or reuse existing tools to build new dApps &
-Rollups must publish all transaction data on-chain, increasing costs \\
-\end{tabular}
-\caption{Pros and Cons of Optimistic Rollups}
-\end{table}
+Transaction data is stored on Layer 1, improving transparency, security, censorship resistance, and decentralization
+& Centralized rollup validators may influence transaction ordering \\[0.5em]
 
-\section{Zero Knowledge Rollups}
+Fraud proving allows honest minorities to protect the chain, and fraud proof computation is accessible to regular L2 nodes
+& If no honest nodes exist, a malicious operator may steal funds by publishing invalid blocks and invalid state commitments \\[0.5em]
+
+Anyone can advance the chain by executing transactions and publishing assertions
+& Users must wait through the challenge period before withdrawing funds \\[0.5em]
+
+Compatible with EVM and Solidity, allowing developers to deploy native Ethereum smart contracts or reuse existing tools to build new dApps
+& Rollups must publish all transaction data on-chain, increasing fees \\
+
+\end{longtable}
+
+
+\section{Zero-Knowledge Rollups}
+\subsection{Operating Principles}
+
+\emph{Zero-Knowledge Rollups} (ZK-rollups) aggregate transactions into batches executed \emph{off-chain}, thereby reducing the amount of data that must be posted on the main blockchain (Layer 1, L1).  
+Unlike \emph{Optimistic Rollups}, which rely on dispute mechanisms (\emph{fraud proofs}) and require a challenge period, ZK-rollups employ cryptographic validity proofs to attest to the correctness of state transitions.
+
+The overall process consists of three main phases:
+\begin{enumerate}
+    \item Transactions are collected and executed \emph{off-chain}, then compressed to minimize publication costs.
+    \item The operator (sequencer) submits a state commitment to the \emph{mainnet} -- typically the new \emph{state root} -- accompanied by the \emph{validity proof}. At the same time, the relevant \emph{calldata} (or its cryptographic commitment) is published to guarantee \emph{data availability}.
+    \item The rollup's smart contract on L1 verifies the proof and securely updates the on-chain state commitment.
+\end{enumerate}
+
+\subsection{Transaction Execution}
+
+Users of a ZK-rollup sign their transactions and send them to L2 operators for processing and inclusion in a forthcoming batch.  
+In many implementations, the operator is a centralized entity, referred to as the \textit{sequencer}, which is solely responsible for executing transactions, constructing L2 blocks, and submitting batches to the rollup contract on L1. Under this model, only the \textit{sequencer} can advance the L2 state.
+
+Other ZK-rollups adopt validator-based systems using Proof of Stake. Prospective operators must lock funds in the rollup contract, and their probability of being selected to produce the next batch is proportional to their stake. Malicious behavior may result in slashing, providing strong economic incentives for honest participation.
+
+\subsection{Publishing ZK-Rollup Data on Ethereum}
+
+In ZK-rollups, aggregated transaction data is published on Ethereum as \textit{calldata}, ensuring \textit{data availability} and allowing anyone to reconstruct the L2 state independently of the operator.  
+To reduce gas costs, the published data often consists only of a cryptographic commitment---for example, the \textit{batch root}---rather than the full transaction set. 
+
+\subsection{State Commitments}
+
+The state of a ZK-rollup, including all L2 accounts and balances, is represented using a \textit{Merkle tree}.  
+The tree's root, known as the \textit{state root}, is stored in the on-chain rollup contract, enabling secure tracking of state evolution.  
+Each transaction batch results in a new state, represented by a new \textit{state root}.  
+
+In addition, the operator computes the \textit{batch root}, the Merkle root of the transactions included in the batch.  
+This batch root enables users to prove the inclusion of individual transactions through \textit{Merkle proofs}, without requiring the download of the entire L2 block.
+
+\subsection{Validity Proofs}
+
+To ensure the correctness of all state updates, each batch is accompanied by a \textit{validity proof}, a cryptographic proof verified by the on-chain smart contract before the corresponding \emph{state root} becomes canonical.  
+The validity proof guarantees that all transactions in the batch are valid and consistent with the previous state, without requiring L1 to re-execute them.  
+
+This mechanism allows immediate state finalization and enables users to withdraw funds without challenge periods or delays, while maintaining a trustless security model.
+
+\section{Advantages and Disadvantages}
+
+Table \ref{tab:zkrollup-vs} summarizes the main advantages and disadvantages of Zero-Knowledge Rollups as a scalability solution.
+
+\renewcommand{\arraystretch}{1.5}
+
+\begin{longtable}{@{}p{7cm} p{7cm}@{}}
+\caption{Advantages and disadvantages of ZK-rollups}
+\label{tab:zkrollup-vs} \\
+\toprule
+\textit{Advantages} & \textit{Disadvantages} \\
+\midrule
+\endfirsthead
+
+\toprule
+\textit{Advantages} & \textit{Disadvantages} \\
+\midrule
+\endhead
+
+\bottomrule
+\endlastfoot
+
+Validity proofs ensure correctness of all off-chain transactions, preventing invalid state transitions
+& Computing and verifying validity proofs is resource-intensive, increasing operational costs \\[0.5em]
+
+Fast transaction finality: state updates are confirmed as soon as the proof is verified on L1
+& Generating validity proofs often requires specialized hardware, potentially contributing to centralization \\[0.5em]
+
+Security relies on trustless cryptographic guarantees rather than on the honesty of incentivized participants, as in Optimistic Rollups
+& Centralized sequencers may influence transaction ordering (MEV risks) \\[0.5em]
+
+On-chain data availability guarantees security, decentralization, and censorship resistance
+& High hardware requirements may reduce the number of participants capable of producing blocks, increasing the risk of operator-level stagnation or censorship \\[0.5em]
+
+Greater capital efficiency and the possibility of withdrawing funds from L2 without delay
+& Some proving systems (e.g., ZK-SNARKs) require a \textit{trusted setup} which, if compromised, may endanger rollup security \\[0.5em]
+
+Users do not need to validate the chain to protect their funds, and the system does not rely on liveness assumptions
+& \\[0.5em]
+
+Superior data compression reduces calldata publication costs and lowers transaction fees
+& \\
+
+\end{longtable}
+
+\renewcommand{\arraystretch}{1}
+
 \section{Comparison Optimistic vs ZK Rollups}
 
 In this chapter, we compare the main characteristics of the two primary rollup models: Optimistic Rollups and ZK-Rollups.
@@ -291,6 +392,20 @@ In the future, the evolution of Rollups, integration with sharding techniques, a
         \url{https://www.researchgate.net/publication/392603297_Analysis_of_Blockchain-Technology}
   \item Thibault, L. T., Sarry, T., \& Hafid, A. S. (2022). Blockchain scaling using rollups: A comprehensive survey. IEEE Access, 10, 93039-93054.
   \item Vashchuk, O., \& Shuwar, R. (2018). Pros and cons of consensus algorithm proof of stake. Difference in the network safety in proof of work and proof of stake. Electronics and information technologies (09).
+  \item Binance Academy, \textit{What is the blockchain trilemma?}, 2019. \\
+        \url{https://www.binance.com/en/academy/articles/what-is-the-blockchain-trilemma}
+  \item Binance Academy, \textit{Optimistic vs. Zero-Knowledge Rollup: What's the difference}, 2023. \\
+    \url{https://academy.binance.com/en/articles/optimistic-vs-zero-knowledge-rollups-what-s-the-difference}
+  \item Binance Academy, \textit{Sharding}. \\
+    \url{https://academy.binance.com/en/glossary/sharding}
+  \item Ethereum, \textit{Proof-of-stake vs proof-of-work}, 2024. \\
+    \url{https://ethereum.org/en/developers/docs/consensus-mechanisms/pos/pos-vs-pow/}
+  \item Ethereum, \textit{Optimistic Rollups}, 2025. \\
+    \url{https://ethereum.org/nb/developers/docs/scaling/optimistic-rollups/}
+  \item Ethereum, \textit{Scaling}, 2025. \\
+    \url{https://ethereum.org/en/developers/docs/scaling}
+  \item Guardarian, \textit{Blockchain layers explained}, 2023. \\
+    \url{https://guardarian.com/blog/blockchain-layers-explained-l1-l2-l3/}
 \end{enumerate}
 
 \end{spacing}
